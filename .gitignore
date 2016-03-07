@@ -1,0 +1,9 @@
+/.idea/
+/target/
+/bs_search_api/target/
+/bs_search_war/target/
+/bs_search_api/.idea/
+/bs_search_war/.idea/
+/.settings
+/.project
+*.iml
