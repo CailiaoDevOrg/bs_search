@@ -78,7 +78,7 @@ public class SearchClientImpl implements SearchClient {
     }
 
     private IndexSearcher createSearcherInstance() throws IOException {
-        FSDirectory directory = FSDirectory.open(Paths.get("/indexFile"));
+        FSDirectory directory = FSDirectory.open(Paths.get("indexFile"));
         IndexReader reader = DirectoryReader.open(directory);
         return new IndexSearcher(reader);
     }

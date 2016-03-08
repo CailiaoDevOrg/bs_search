@@ -67,7 +67,7 @@ public class QuestionnaireIndexServiceImpl implements QuestionnaireIndexService 
         // 创建分词器
         Analyzer analyzer = new StandardAnalyzer();
         // 创建索引写入工具
-        FSDirectory directory = FSDirectory.open(Paths.get("/indexFile"));
+        FSDirectory directory = FSDirectory.open(Paths.get("indexFile"));
         IndexWriterConfig indexWriterConfig = new IndexWriterConfig(analyzer);
         indexWriterConfig.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
         return new IndexWriter(directory, indexWriterConfig);
