@@ -27,6 +27,23 @@ import java.util.List;
  * Created by niuyang on 16/3/8.
  */
 public class SearchClient {
+    
+    private static SearchClient searchClient = null;
+    
+    private SearchClient() {
+        
+    }
+    
+    public static SearchClient build() {
+        if (searchClient == null) {
+            synchronized (searchClient) {
+                if (searchClient == null) {
+                    searchClient = new SearchClient();
+                }
+            }
+        }
+        return searchClient;
+    }
 
     /**
      * 根据查询条件搜索
