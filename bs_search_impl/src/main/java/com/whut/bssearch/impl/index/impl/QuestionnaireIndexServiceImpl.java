@@ -133,7 +133,7 @@ public class QuestionnaireIndexServiceImpl implements QuestionnaireIndexService 
                 try {
                     buildIndex(indexWriter, questionnaireTemplate.getId());
                 } catch (IOException e) {
-                    logger.error("buildIndex error, ex = ", ex);
+                    logger.error("buildIndex error, ex = ", e);
                 }
             });
         }
