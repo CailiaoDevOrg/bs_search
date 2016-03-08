@@ -59,9 +59,7 @@ public class SearchClient {
         try {
             IndexWriter indexWriter = getIndexWriter();
             // 创建索引
-            long createIndexStartTime = System.currentTimeMillis();
             buildIndex(indexWriter, questionnaireContentList, questionnaireTemplateId);
-            long createIndexEndTime = System.currentTimeMillis();
         } catch (IOException e) {
             response.setRetCode(ApiResponseCode.IO_EXCEPTION);
         }
