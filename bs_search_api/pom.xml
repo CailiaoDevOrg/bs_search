@@ -15,6 +15,14 @@
         <version>0.0.1</version>
     </parent>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.whut.cailiao</groupId>
+            <artifactId>cailiao_ms_api</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+
     <build>
         <sourceDirectory>src/main/java</sourceDirectory>
         <resources>
