@@ -118,7 +118,7 @@ public class QuestionnaireIndexServiceImpl implements QuestionnaireIndexService 
         }
     }
 
-    private void buildIndex(IndexWriter indexWriter) {
+    private void buildIndex(IndexWriter indexWriter) throws IOException {
         ApiResponse response = this.questionnaireTemplateService.getPublishedQuestionnaireTemplateList();
         Map<String, Object> bodyMap;
         if (response == null || response.getRetCode() != ApiResponseCode.SUCCESS
@@ -130,12 +130,16 @@ public class QuestionnaireIndexServiceImpl implements QuestionnaireIndexService 
         List<QuestionnaireTemplate> questionnaireTemplateList = (List<QuestionnaireTemplate>) bodyMap.get("questionnaireTemplateList");
         if (CollectionUtils.isNotEmpty(questionnaireTemplateList)) {
             questionnaireTemplateList.stream().filter(questionnaireTemplate -> questionnaireTemplate != null && questionnaireTemplate.getId() != null && questionnaireTemplate.getId().compareTo(0) > 0).forEach(questionnaireTemplate -> {
-                buildIndex(indexWriter, questionnaireTemplate.getId());
+                try {
+                    buildIndex(indexWriter, questionnaireTemplate.getId());
+                } catch (IOException e) {
+                    logger.error("buildIndex error, ex = ", ex);
+                }
             });
         }
     }
 
-    private void buildIndex(IndexWriter indexWriter, int questionnaireTemplateId) {
+    private void buildIndex(IndexWriter indexWriter, int questionnaireTemplateId) throws IOException {
         ApiResponse response = this.questionnaireService.getQuestionnaireContentCount(questionnaireTemplateId);
         Map<String, Object> bodyMap;
         if (response == null
@@ -151,7 +155,7 @@ public class QuestionnaireIndexServiceImpl implements QuestionnaireIndexService 
             return;
         }
         for (int i = 1; i <= (totalNum + 100 - 1) / 100; i++) {
-            buildIndex(indexWriter, getQuestionnaireContentList(questionnaireTemplateId, i, 100));
+            buildIndex(indexWriter, getQuestionnaireContentList(questionnaireTemplateId, i, 100), questionnaireTemplateId);
         }
     }
 }
