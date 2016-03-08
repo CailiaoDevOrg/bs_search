@@ -1,4 +1,4 @@
-package com.whut.bssearch.war;
+package com.whut.bssearch.impl;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

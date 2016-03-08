@@ -1,6 +1,4 @@
-package com.whut.bssearch.war.index;
-
-import java.io.IOException;
+package com.whut.bssearch.impl.index;
 
 /**
  * Created by niuyang on 16/3/8.

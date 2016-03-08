@@ -1,4 +1,4 @@
-package com.whut.bssearch.war.index.impl;
+package com.whut.bssearch.impl.index.impl;
 
 import java.io.File;
 import java.nio.file.Paths;
@@ -14,7 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.whut.bssearch.war.index.QuestionnaireIndexService;
+import com.whut.bssearch.impl.index.QuestionnaireIndexService;
 import com.whut.cailiao.api.model.questionnaire.QuestionnaireContent;
 
 /**
