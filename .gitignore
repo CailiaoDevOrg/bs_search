@@ -1,16 +1,6 @@
 /.idea/
 /target/
-/bs_search_api/target/*
-/bs_search_api/.idea/
-/bs_search_api/.project
-/bs_search_api/.settings/
-/bs_search_impl/target/
-/bs_search_impl/target/
-/bs_search_impl/.idea/
-/bs_search_impl/.project
-/bs_search_impl/.settings/
-/bs_search_impl/bin/
-/bs_search_impl/indexFile/
+/indexFile/
 /.settings
 /.project
 *.iml

@@ -1,17 +1,20 @@
-package com.whut.bssearch.impl.api;
+package com.whut.bssearch.api;
 
-import com.whut.bssearch.api.SearchClient;
 import com.whut.cailiao.api.commons.ApiResponse;
+import com.whut.cailiao.api.commons.ApiResponseCode;
+import com.whut.cailiao.api.model.questionnaire.QuestionnaireContent;
 import com.whut.cailiao.api.model.questionnaire.search.QuestionnaireContentQueryBean;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.index.DirectoryReader;
-import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.Term;
+import org.apache.lucene.document.Field;
+import org.apache.lucene.document.IntField;
+import org.apache.lucene.document.TextField;
+import org.apache.lucene.index.*;
 import org.apache.lucene.search.*;
 import org.apache.lucene.store.FSDirectory;
-import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -19,17 +22,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 只提供搜索功能
+ * 不提供创建索引的功能
  * Created by niuyang on 16/3/8.
  */
-@Service("searchClient")
-public class SearchClientImpl implements SearchClient {
+public class SearchClient {
 
     /**
      * 根据查询条件搜索
      * @param questionnaireContentQueryBean
      * @return
      */
-    @Override
     public ApiResponse search(QuestionnaireContentQueryBean questionnaireContentQueryBean) throws IOException {
         ApiResponse response = ApiResponse.createDefaultApiResponse();
         if (questionnaireContentQueryBean == null) {
@@ -40,6 +43,27 @@ public class SearchClientImpl implements SearchClient {
         List<String> resultList = getResultList(searcher, booleanQuery);
         if (CollectionUtils.isNotEmpty(resultList)) {
             response.addBody("resultList", resultList);
+        }
+        return response;
+    }
+
+    /**
+     * 创建索引
+     * @param questionnaireContentList
+     * @param questionnaireTemplateId
+     * @return
+     */
+    public ApiResponse createIndex(List<QuestionnaireContent> questionnaireContentList, int questionnaireTemplateId) {
+        // 获取索引写入器
+        ApiResponse response = ApiResponse.createDefaultApiResponse();
+        try {
+            IndexWriter indexWriter = getIndexWriter();
+            // 创建索引
+            long createIndexStartTime = System.currentTimeMillis();
+            buildIndex(indexWriter, questionnaireContentList, questionnaireTemplateId);
+            long createIndexEndTime = System.currentTimeMillis();
+        } catch (IOException e) {
+            response.setRetCode(ApiResponseCode.IO_EXCEPTION);
         }
         return response;
     }
@@ -95,4 +119,38 @@ public class SearchClientImpl implements SearchClient {
         }
         return resultList;
     }
+
+    /**
+     * 创建索引
+     * @param indexWriter
+     * @param questionnaireContentList
+     */
+    private void buildIndex(IndexWriter indexWriter,
+                            List<QuestionnaireContent> questionnaireContentList,
+                            int questionnaireTemplateId) throws IOException {
+        if (indexWriter == null || questionnaireTemplateId <= 0 || CollectionUtils.isEmpty(questionnaireContentList)) {
+            return;
+        }
+        for (QuestionnaireContent questionnaireContent : questionnaireContentList) {
+            if (questionnaireContent == null) {
+                continue;
+            }
+            Document document = new Document();
+            document.add(new IntField("questionnaireTemplateId", questionnaireTemplateId, Field.Store.YES));
+            document.add(new TextField("productionLine", questionnaireContent.getProductionLine(), Field.Store.YES));
+            document.add(new TextField("content", questionnaireContent.getJsonContent(), Field.Store.YES));
+            indexWriter.addDocument(document);
+        }
+    }
+
+    private IndexWriter getIndexWriter() throws IOException {
+        // 创建分词器
+        Analyzer analyzer = new StandardAnalyzer();
+        // 创建索引写入工具
+        FSDirectory directory = FSDirectory.open(Paths.get("indexFile"));
+        IndexWriterConfig indexWriterConfig = new IndexWriterConfig(analyzer);
+        indexWriterConfig.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
+        return new IndexWriter(directory, indexWriterConfig);
+    }
+
 }
