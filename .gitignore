@@ -10,6 +10,7 @@
 /bs_search_impl/.project
 /bs_search_impl/.settings/
 /bs_search_impl/bin/
+/bs_search_impl/indexFile/
 /.settings
 /.project
 *.iml
