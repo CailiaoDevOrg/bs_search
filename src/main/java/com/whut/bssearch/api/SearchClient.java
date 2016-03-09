@@ -70,13 +70,13 @@ public class SearchClient {
      * @param questionnaireTemplateId
      * @return
      */
-    public ApiResponse createIndex(List<QuestionnaireContent> questionnaireContentList, int questionnaireTemplateId) {
+    public ApiResponse createIndex(List<QuestionnaireContent> questionnaireContentList) {
         // 获取索引写入器
         ApiResponse response = ApiResponse.createDefaultApiResponse();
         try {
             IndexWriter indexWriter = getIndexWriter();
             // 创建索引
-            buildIndex(indexWriter, questionnaireContentList, questionnaireTemplateId);
+            buildIndex(indexWriter, questionnaireContentList);
         } catch (IOException e) {
             response.setRetCode(ApiResponseCode.IO_EXCEPTION);
         }
@@ -141,9 +141,8 @@ public class SearchClient {
      * @param questionnaireContentList
      */
     private void buildIndex(IndexWriter indexWriter,
-                            List<QuestionnaireContent> questionnaireContentList,
-                            int questionnaireTemplateId) throws IOException {
-        if (indexWriter == null || questionnaireTemplateId <= 0 || CollectionUtils.isEmpty(questionnaireContentList)) {
+                            List<QuestionnaireContent> questionnaireContentList) throws IOException {
+        if (indexWriter == null || CollectionUtils.isEmpty(questionnaireContentList)) {
             return;
         }
         for (QuestionnaireContent questionnaireContent : questionnaireContentList) {
@@ -151,7 +150,7 @@ public class SearchClient {
                 continue;
             }
             Document document = new Document();
-            document.add(new IntField("questionnaireTemplateId", questionnaireTemplateId, Field.Store.YES));
+            document.add(new IntField("questionnaireTemplateId", questionnaireContent.getQuestionnaireTemplateId(), Field.Store.YES));
             document.add(new TextField("productionLine", questionnaireContent.getProductionLine(), Field.Store.YES));
             document.add(new TextField("content", questionnaireContent.getJsonContent(), Field.Store.YES));
             indexWriter.addDocument(document);
