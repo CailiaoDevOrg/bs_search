@@ -36,7 +36,7 @@ public class SearchClient {
     
     public static SearchClient build() {
         if (searchClient == null) {
-            synchronized (searchClient) {
+            synchronized (SearchClient.class) {
                 if (searchClient == null) {
                     searchClient = new SearchClient();
                 }
